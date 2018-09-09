@@ -24,7 +24,12 @@ class JobAssignController extends Controller
     {
         $login_user_id = Auth::guard('admin')->user()->id;
         // $role = Role::Where('id', $loginuserid)->value('role');
-        $jobLists = JobAssign::where('created_by', $login_user_id)->get();
+        if ($login_user_id == 1) {
+            $jobLists = JobAssign::all();    
+        }else{
+            $jobLists = JobAssign::where('created_by', $login_user_id)->get();
+        }
+        
         return view('admin.job-assign.index', compact('jobLists'));
     }
     
