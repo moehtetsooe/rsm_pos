@@ -42,6 +42,14 @@
 				</thead>
 				<tbody>
 					@foreach($jobDetails as $key => $detail)
+					@php
+						$id = '';
+					@endphp
+					@foreach($status as $value)
+						@php
+							echo $value->id;
+						@endphp
+					@endforeach
 					<tr>
 						<td>
 							{{ $key+1 }}
@@ -52,10 +60,11 @@
 							<a download="{{ $detail->file_name }}" href="{{ $detail->file_path }}/{{ $detail->file_name }}" title="ImageName" class="downdisabled btn btn-success download{{ $key }}" style="position: relative;top: -14px;" id="add{{$key}}" value="{{$key}}">
 							    Download
 							</a>
-
 							<div class="upload-btn-wrapper">
-							  	<button class="btn btn-warning upload{{$key}} upbtn" value="{{$key}}">Upload</button>
-							  	<input type="file" name="myfile" />
+								<form action="">
+							  		<button type="submit" class="btn btn-warning upload{{$key}} upbtn" value="{{$key}}">Upload</button>
+							  		<input type="file" name="myfile" />
+							  	</form>
 							</div>
 						</td>
 					</tr>
@@ -79,13 +88,13 @@
 					type: "GET",
 					data: {'id' : id},
 					success: function(data){
-						$(".downdisabled").attr('class','downdisabled btn btn-danger download{{ $key }} disabled');
+						/*$(".downdisabled").attr('class','downdisabled btn btn-danger download{{ $key }} disabled');
 						if ( uvalue == dvalue ) {
 							$(".upbtn").attr('class','btn btn-warning upload{{$key}} upbtn');
 						}
 						else{
 							$(".upbtn").attr('class','btn btn-warning upload{{$key}} upbtn disabled');
-						}
+						}*/
 					}
 				});
 			});

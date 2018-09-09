@@ -21,6 +21,7 @@ class CreateJobAssignsTable extends Migration
             $table->timestamp('to_date')->nullable();
             $table->string('estimate_complete_time')->nullable();
             $table->string('operator_id');
+            $table->string('upload_id')->nullable();
             $table->integer('created_by')->nullable();
             $table->integer('update_by')->nullable();
             $table->softDeletes();
