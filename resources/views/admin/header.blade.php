@@ -121,9 +121,9 @@ document.getElementById('logout-form').submit();">
 </ul>
 @endadmin
 <?php
-$member_id = Auth::guard('admin')->user()->id;
+$member_id = Auth::guard('admin')->user()->role;
 $role = App\Role::where('id',$member_id)->value('role');
-// dd($role);
+
 ?>
 @if($role == '2' || $role == '1')
 <li class="has-sub">
@@ -136,8 +136,7 @@ $role = App\Role::where('id',$member_id)->value('role');
 <li><a href="{{asset('admin/job-assign')}}">Job Assign Lists</a></li>
 </ul>
 </li>
-@endif
-@if($role == '3' || $role == '1')
+@elseif($role == '3' || $role == '1')
 <li class="has-sub">
 <a href="javascript:;">
 <b class="caret pull-right"></b>
@@ -148,8 +147,7 @@ $role = App\Role::where('id',$member_id)->value('role');
 <li><a href="{{asset('admin/operator')}}">Job Lists</a></li>
 </ul>
 </li>
-@endif
-@if($role == '4' || $role == '1')
+@elseif($role == '4' || $role == '1')
 <li class="has-sub">
 <a href="javascript:;">
 <b class="caret pull-right"></b>

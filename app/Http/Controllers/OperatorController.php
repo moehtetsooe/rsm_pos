@@ -27,7 +27,7 @@ class OperatorController extends Controller
     {
         $currentuserid = Auth::guard('admin')->user()->role;
         $role = Role::Where('id', $currentuserid)->value('role');
-        
+       
         if($currentuserid == 1){
             $arr_job_list = JobAssign::all()->toArray();
         }else{
