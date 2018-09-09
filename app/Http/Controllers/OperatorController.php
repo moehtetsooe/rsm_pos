@@ -42,7 +42,7 @@ class OperatorController extends Controller
                 }     
             }
         }
-        // dd($arr_job_list);
+        
         return view('admin.operator.index', compact('arr_job_list'));
     }
     
