@@ -30,24 +30,18 @@
 					</tr>
 				</thead>
 				<tbody>
-					@php
-						$i = 1;
-					@endphp
-					@foreach($jobLists as $list)
+					@foreach($arr_job_list as $key=>$list)
 					<tr>
-						<td>{{ $i }}</td>
-						<td>{{ $list->job_code }}</td>
+						<td>{{ $key }}</td>
+						<td>{{ $list['job_code'] }}</td>
 						<td></td>
 						<td></td>
-						<td>{{ $list->from_date }}</td>
-						<td>{{ $list->to_date }}</td>
+						<td>{{ $list['from_date'] }}</td>
+						<td>{{ $list['to_date'] }}</td>
 						<td>
-							<a class="btn btn-info btn-xs" href="job-detail/{{$list->id}}"><i class="fa fa-eye"></i> View</a>
+							<a class="btn btn-info btn-xs" href="job-detail/{{$list['id']}}"><i class="fa fa-eye"></i> View</a>
 						</td>
 					</tr>
-					@php
-						$i++;
-					@endphp
 					@endforeach
 				</tbody>
 			</table>
