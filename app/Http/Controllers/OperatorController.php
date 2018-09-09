@@ -34,10 +34,12 @@ class OperatorController extends Controller
             $jobLists = JobAssign::all();
             $arr_job_list = [];
             foreach($jobLists as $list){
+                $assign_count = JobAssignDetail::where('job_assign_id', $list->id)->count();
+                $remain_count = $assign_count - MemberWorkDone::where('job_assigns_id', $list->id)->count();
                 $operator_ids = $list->operator_id;
                 foreach($operator_ids as $id){
                     if ($id == $currentuserid) {
-                        $arr_job_list[] = array('id' => $list->id, 'job_code'=>$list->job_code, 'from_date'=> $list->from_date, 'to_date'=> $list->to_date, 'est_time'=>'estimate_complete_time', 'operator_id'=> $id);    
+                        $arr_job_list[] = array('id' => $list->id, 'job_code'=>$list->job_code, 'from_date'=> $list->from_date, 'to_date'=> $list->to_date, 'est_time'=>'estimate_complete_time', 'operator_id'=>$id, 'job_assign_count'=>$assign_count, 'remain_count'=>$remain_count);    
                     }
                 }     
             }
