@@ -7,6 +7,7 @@ use App\JobAssign;
 use App\JobAssignDetail;
 use App\JobAssignOperator;
 use App\MemberWorkDone;
+use App\OperatorUploads;
 use App\Admin;
 use App\Role;
 use Auth;
@@ -42,8 +43,8 @@ class OperatorController extends Controller
     {
 
         $jobDetails = JobAssignDetail::Where('job_assign_details.job_assign_id','=',$id)->get();
-        //dd($jobDetails);
-        return view('admin.operator.detail', compact('jobDetails'));
+        $status = MemberWorkDone::get();
+        return view('admin.operator.detail', compact('jobDetails','status'));
     }
 
     public function download(Request $request)

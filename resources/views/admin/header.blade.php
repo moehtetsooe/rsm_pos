@@ -123,7 +123,6 @@
           @php
             $member_id = Auth::guard('admin')->user()->id;
             $role = App\Role::where('roles.role','=',$member_id)->select('roles.role')->first();
-            echo $role;
           @endphp
           @if($role->role == '2' || $role->role == '1')
           <li class="has-sub">
