@@ -62,58 +62,58 @@ class JobAssignController extends Controller
             'toDate' => 'required',
             'estimatedTime' => 'required|string|max:255',
             'created_by' => 'required',
-            ]);
+        ]);
             
-            //dd($request->all());
+        //dd($request->all());
+        
+        $fromdate = Carbon::parse($request->fromDate);
+        $todate = Carbon::parse($request->toDate);
+        //dd($request->assign_operator);
+        //dd($fromdate);
+        
+        DB::beginTransaction();
+        
+        try {
             
-            $fromdate = Carbon::parse($request->fromDate);
-            $todate = Carbon::parse($request->toDate);
-            //dd($request->assign_operator);
-            //dd($fromdate);
+            $jobAssign = new JobAssign();
+            $jobAssign->job_code = $request->jobTitle;
+            $jobAssign->from_date = $fromdate;
+            $jobAssign->to_date = $todate;
+            $jobAssign->estimate_complete_time = $request->estimatedTime;
+            $jobAssign->operator_id = $request->input('assign_operator');
+            $jobAssign->created_by = $request->created_by;
+            $jobAssign->save();
             
-            DB::beginTransaction();
+            $job_assign_id = $jobAssign->id;
+            $img_name = '';
+            $j = count($request->assignFile);
+            $month_year = date('m-Y/');
+            $destinationPath = '/images/assign/'.$month_year;
             
-            try {
+            for ($i=0; $i < $j ; $i++) { 
+                $image = $request->assignFile[$i];                
+                $image_name = str_random(3).'_prod.'.$image->getClientOriginalExtension();                
+                $image->move(public_path().$destinationPath, $image_name);
                 
-                $jobAssign = new JobAssign();
-                $jobAssign->job_code = $request->jobTitle;
-                $jobAssign->from_date = $fromdate;
-                $jobAssign->to_date = $todate;
-                $jobAssign->estimate_complete_time = $request->estimatedTime;
-                $jobAssign->operator_id = $request->input('assign_operator');
-                $jobAssign->created_by = $request->created_by;
-                $jobAssign->save();
+                $img_name = $image_name;
                 
-                $job_assign_id = $jobAssign->id;
-                $img_name = '';
-                $j = count($request->assignFile);
-                $month_year = date('m-Y/');
-                $destinationPath = '/images/assign/'.$month_year;
-                
-                for ($i=0; $i < $j ; $i++) { 
-                    $image = $request->assignFile[$i];                
-                    $image_name = str_random(3).'_prod.'.$image->getClientOriginalExtension();                
-                    $image->move(public_path().$destinationPath, $image_name);
+                JobAssignDetail::create([
+                    'job_assign_id' => $job_assign_id,
+                    'file_path' => $destinationPath,
+                    'file_name' => $img_name,
+                    ]);
                     
-                    $img_name = $image_name;
-                    
-                    JobAssignDetail::create([
-                        'job_assign_id' => $job_assign_id,
-                        'file_path' => $destinationPath,
-                        'file_name' => $img_name,
-                        ]);
-                        
-                    }
-                    
-                    DB::commit();
-                    
-                    return redirect('admin/job-assign')->with('success', 'Successfully Add New Product!');
-                    
-                } catch (Exception $e) {
-                    DB::rollback();
-                    return $e->getMessage();
                 }
-            }
+                
+                DB::commit();
+                
+                return redirect('admin/job-assign')->with('success', 'Successfully Add New Product!');
+                
+        } catch (Exception $e) {
+            DB::rollback();
+            return $e->getMessage();
+        }
+    }
             
             /**
             * Display the specified resource.

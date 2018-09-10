@@ -16,7 +16,7 @@ class CreateOperatorUploadsTable extends Migration
         Schema::create('operator_uploads', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->nullable();
-            $table->integer('job_assign__id')->nullable();
+            $table->integer('job_assign_id')->nullable();
             $table->integer('job_assign_details_id')->nullable();
             $table->integer('job_assign_operator_id')->nullable();
             $table->string('file_path');

@@ -16,6 +16,7 @@ class CreateMemberWorkDonesTable extends Migration
         Schema::create('member_work_dones', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->nullable();
+            $table->integer('job_assigns_id')->nullable();
             $table->integer('job_assign_details_id')->nullable();
             $table->integer('job_assign_operators_id')->nullable();
             $table->enum('performance', ['good','notgood']);

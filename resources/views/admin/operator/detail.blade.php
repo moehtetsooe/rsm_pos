@@ -3,25 +3,6 @@
 <style>
 	.btn-default.btn-on.active{background-color: #5BB75B;color: white;}
 	.btn-default.btn-off.active{background-color: #DA4F49;color: white;}
-
-	.upload-btn-wrapper {
-	  position: relative;
-	  overflow: hidden;
-	  display: inline-block;
-	}
-
-	.upload-btn-wrapper input[type=file] {
-	  font-size: 100px;
-	  position: absolute;
-	  left: 0;
-	  top: 0;
-	  opacity: 0;
-	}
-
-	.disabled {
-		cursor: no-drop;
-	 	pointer-events: none;
-	}
 </style>
 @endsection
 @section('content')
@@ -42,14 +23,6 @@
 				</thead>
 				<tbody>
 					@foreach($jobDetails as $key => $detail)
-					@php
-						$id = '';
-					@endphp
-					@foreach($status as $value)
-						@php
-							echo $value->id;
-						@endphp
-					@endforeach
 					<tr>
 						<td>
 							{{ $key+1 }}
@@ -57,15 +30,11 @@
 						<td>{{ $detail->file_name }}</td>
 						<td id="">
 							<input type="text" class="imgid{{ $key+1 }}" value="{{ $detail->id }}" hidden="hidden">
-							<a download="{{ $detail->file_name }}" href="{{ $detail->file_path }}/{{ $detail->file_name }}" title="ImageName" class="downdisabled btn btn-success download{{ $key }}" style="position: relative;top: -14px;" id="add{{$key}}" value="{{$key}}">
+							<input type="text" class="createdby{{ $key+1 }}" value="{{ $detail->create }}" hidden="hidden">
+							<a download="{{ $detail->file_name }}" href="{{ $detail->file_path }}/{{ $detail->file_name }}" title="ImageName" class="downdisabled btn btn-success download{{ $key }}" id="add{{$key}}" value="{{$key}}">
 							    Download
 							</a>
-							<div class="upload-btn-wrapper">
-								<form action="">
-							  		<button type="submit" class="btn btn-warning upload{{$key}} upbtn" value="{{$key}}">Upload</button>
-							  		<input type="file" name="myfile" />
-							  	</form>
-							</div>
+							<a href="upload/{{ $detail->id }}" class="btn btn-warning">Upload</a>
 						</td>
 					</tr>
 					@endforeach
@@ -81,12 +50,13 @@
 		<?php foreach ($jobDetails as $key => $value): ?>
 			$('.download<?php echo($key); ?>').on('click', function () {
 				var id = $('.imgid<?php echo($key+1); ?>').val();
+				var createdby = $('.createdby<?php echo($key+1); ?>').val();
 				var dvalue = $('.download<?php echo $key; ?>').val();
 				var uvalue = $('.upload<?php echo $key; ?>').val();
 				$.ajax({
 					url: "{{url('admin/download')}}",
 					type: "GET",
-					data: {'id' : id},
+					data: {'id' : id, 'createdby' : createdby},
 					success: function(data){
 						/*$(".downdisabled").attr('class','downdisabled btn btn-danger download{{ $key }} disabled');
 						if ( uvalue == dvalue ) {

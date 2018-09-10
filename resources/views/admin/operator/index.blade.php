@@ -34,8 +34,8 @@
 					<tr>
 						<td>{{ $key }}</td>
 						<td>{{ $list['job_code'] }}</td>
-						<td></td>
-						<td></td>
+						<td>{{ $list['job_assign_count'] }}</td>
+						<td>{{ $list['remain_count'] }}</td>
 						<td>{{ $list['from_date'] }}</td>
 						<td>{{ $list['to_date'] }}</td>
 						<td>

@@ -16,11 +16,11 @@ class CreateJobAssignsTable extends Migration
         Schema::create('job_assigns', function (Blueprint $table) {
             $table->increments('id');
             $table->string('job_code')->nullable();
-            $table->string('job_info')->nullable();
             $table->timestamp('from_date')->nullable();
             $table->timestamp('to_date')->nullable();
             $table->string('estimate_complete_time')->nullable();
             $table->string('operator_id');
+            $table->integer('reassign')->nullable();
             $table->string('upload_id')->nullable();
             $table->integer('created_by')->nullable();
             $table->integer('update_by')->nullable();

@@ -42,9 +42,12 @@ Route::group(['prefix' => 'admin'], function () {
   Route::get('operator', 'OperatorController@index');
   Route::get('job-detail/{id}', 'OperatorController@detail');
   Route::get('download', 'OperatorController@download');
+  Route::get('job-detail/upload/{id}', 'OperatorController@imageUpload');
+  Route::post('job-detail/upload', 'OperatorController@upload');
   Route::get('checker', 'CheckerController@index');
   Route::get('checker-detail/{id}', 'CheckerController@detail');
   Route::get('checker-download', 'CheckerController@download');
+  
   //************ End Operator ************//
 
 });

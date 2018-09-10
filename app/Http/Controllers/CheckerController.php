@@ -27,6 +27,7 @@ class CheckerController extends Controller
     {
     	$upload_id = JobAssign::Where('job_assigns.id','=',$id)->first();
     	$uploads = OperatorUpload::Where('operator_uploads.id','=',$upload_id)->get();
+        dd($uploads);
     	return view('admin.checker.detail', compact('uploads'));
     }
 }
