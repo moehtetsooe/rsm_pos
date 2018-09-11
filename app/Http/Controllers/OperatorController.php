@@ -37,7 +37,7 @@ class OperatorController extends Controller
             if($currentuserid == 1){
                 $arr_job_list[] = array('id' => $list->id, 'job_code'=>$list->job_code, 'from_date'=> $list->from_date, 'to_date'=> $list->to_date, 'est_time'=>'estimate_complete_time', 'job_assign_count'=>$assign_count, 'remain_count'=>$remain_count);
             }else{
-                $operator_ids = $list->operator_id;            
+                $operator_ids = $list->operator_id;      
                 foreach($operator_ids as $id){
                     if ($id == $currentuserid) {
                         $arr_job_list[] = array('id' => $list->id, 'job_code'=>$list->job_code, 'from_date'=> $list->from_date, 'to_date'=> $list->to_date, 'est_time'=>'estimate_complete_time', 'job_assign_count'=>$assign_count, 'remain_count'=>$remain_count);
@@ -50,12 +50,41 @@ class OperatorController extends Controller
     
     public function detail($id)
     {
+        $currentuserid = Auth::guard('admin')->user()->id;
+        $assigndetail = MemberWorkDone::select('job_assign_details_id','user_id','status','job_assign_details_id')->get();
+        //dd($currentuserid);
+
         $jobDetails = JobAssignDetail::join('job_assigns','job_assigns.id','=','job_assign_details.job_assign_id')
         ->Where('job_assign_details.job_assign_id','=',$id)
         ->select('job_assign_details.*','job_assigns.created_by as create')
-        ->get();
-        $status = MemberWorkDone::get();
-        return view('admin.operator.detail', compact('jobDetails','status'));
+        ->get()->toArray();
+
+
+        $arr = [];
+        foreach ($assigndetail as $member) {
+            $arr[] = $member->job_assign_details_id;
+        }
+
+        $tmp = MemberWorkDone::where('status', '=','downloaded')->where('user_id', $currentuserid)->max('id');
+        $enable_id = MemberWorkDone::where('id',$tmp)->value('job_assign_details_id');
+        $status = '';
+        foreach ($assigndetail as $value) {
+            if ($value->user_id == $currentuserid && $value->status == 'downloaded')
+            {
+                $status = 'downloaded';
+            }
+            elseif($value->user_id == $currentuserid && $value->status == 'uploaded')
+            {
+                $status = 'uploaded';
+            }
+            else
+            {
+                $status = 'normal';
+            }
+        }
+        // dd($jobDetails);
+
+        return view('admin.operator.detail', compact('jobDetails','arr','status', 'enable_id'));
     }
     
     public function download(Request $request)
@@ -88,6 +117,7 @@ class OperatorController extends Controller
         ->Where('job_assign_details.id','=',$id)
         ->select('job_assigns.id as jobid')
         ->first();
+        //dd($jobAssign);
         return view('admin.operator.upload', compact('id','jobAssign'));
     }
 
@@ -132,24 +162,22 @@ class OperatorController extends Controller
             $upload->file_path = $image_path;
             $upload->file_name = $image_name;
             $upload->save();
-
-            $job_assign_id = $upload->job_assigns_id;
             $job_assign_details_id = $upload->job_assign_details_id;
 
-            MemberWorkDone::Where('member_work_dones.job_assigns_id','=',$job_assign_id)
-            ->Where('member_work_dones.job_assign_details_id','=',$job_assign_details_id)
+            $upload_time = Carbon::now();
+
+            MemberWorkDone::Where('member_work_dones.job_assign_details_id','=',$job_assign_details_id)
             ->update([
                 'status' => 'uploaded',
+                'upload_time' => $upload_time
             ]);
-                
+
             DB::commit();
-                
-            return redirect('admin/job-detail/$jobAssign->id')->with('success', 'Successfully Upload Image!');
-                
+
+           return redirect()->back();;
         } catch (Exception $e) {
             DB::rollback();
             return $e->getMessage();
         }
-
     }
 }

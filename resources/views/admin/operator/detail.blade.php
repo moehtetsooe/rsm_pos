@@ -9,6 +9,9 @@
 <div id="content" class="content">
 	<ol class="breadcrumb pull-right">
 		<li><a href="{{asset('admin/operator')}}" class="btn btn-warning">Back</a></li>
+		@php
+			$member_id = Auth::guard('admin')->user()->id;
+		@endphp
 	</ol>
 	<h1 class="page-header">Assigned <small>Job Lists</small></h1>
 	<div class="row">
@@ -27,14 +30,33 @@
 						<td>
 							{{ $key+1 }}
 						</td>
-						<td>{{ $detail->file_name }}</td>
+						<td>{{ $detail['file_name'] }}</td>
 						<td id="">
-							<input type="text" class="imgid{{ $key+1 }}" value="{{ $detail->id }}" hidden="hidden">
-							<input type="text" class="createdby{{ $key+1 }}" value="{{ $detail->create }}" hidden="hidden">
-							<a download="{{ $detail->file_name }}" href="{{ $detail->file_path }}/{{ $detail->file_name }}" title="ImageName" class="downdisabled btn btn-success download{{ $key }}" id="add{{$key}}" value="{{$key}}">
-							    Download
-							</a>
-							<a href="upload/{{ $detail->id }}" class="btn btn-warning">Upload</a>
+							@if(in_array($detail["id"],$arr,TRUE))
+								<input type="text" class="imgid{{ $key+1 }}" value="{{ $detail['id'] }}" hidden="hidden">
+								<input type="text" class="createdby{{ $key+1 }}" value="{{ $detail['create'] }}" hidden="hidden">
+								<a download="{{ $detail['file_name'] }}" href="{{ $detail['file_path'] }}/{{ $detail['file_name'] }}" title="ImageName" class="disabled downdisabled btn btn-success download{{ $key }}" id="add{{$key}}" value="{{$key}}">
+								    Download
+								</a>
+							@elseif($status == 'downloaded')
+								<input type="text" class="imgid{{ $key+1 }}" value="{{ $detail['id'] }}" hidden="hidden">
+								<input type="text" class="createdby{{ $key+1 }}" value="{{ $detail['create'] }}" hidden="hidden">
+								<a download="{{ $detail['file_name'] }}" href="{{ $detail['file_path'] }}/{{ $detail['file_name'] }}" title="ImageName" class="disabled downdisabled btn btn-success download{{ $key }}" id="add{{$key}}" value="{{$key}}">
+								    Download
+								</a>
+							@else
+								<input type="text" class="imgid{{ $key+1 }}" value="{{ $detail['id'] }}" hidden="hidden">
+								<input type="text" class="createdby{{ $key+1 }}" value="{{ $detail['create'] }}" hidden="hidden">
+								<a download="{{ $detail['file_name'] }}" href="{{ $detail['file_path'] }}/{{ $detail['file_name'] }}" title="ImageName" class="downdisabled btn btn-success download{{ $key }}" id="add{{$key}}" value="{{$key}}">
+								    Download
+								</a>
+							@endif
+
+							@if($enable_id == $detail['id'])
+								<a href="upload/{{ $detail['id'] }}" class="btn btn-warning">Upload</a>
+							@else
+								<a href="upload/{{ $detail['id'] }}" class="btn btn-warning disabled">Upload</a>
+							@endif
 						</td>
 					</tr>
 					@endforeach
@@ -45,30 +67,30 @@
 </div>
 @endsection
 @section('js')
-<script type="text/javascript" >
-	$(document).ready(function(){
-		<?php foreach ($jobDetails as $key => $value): ?>
-			$('.download<?php echo($key); ?>').on('click', function () {
-				var id = $('.imgid<?php echo($key+1); ?>').val();
-				var createdby = $('.createdby<?php echo($key+1); ?>').val();
-				var dvalue = $('.download<?php echo $key; ?>').val();
-				var uvalue = $('.upload<?php echo $key; ?>').val();
-				$.ajax({
-					url: "{{url('admin/download')}}",
-					type: "GET",
-					data: {'id' : id, 'createdby' : createdby},
-					success: function(data){
-						/*$(".downdisabled").attr('class','downdisabled btn btn-danger download{{ $key }} disabled');
-						if ( uvalue == dvalue ) {
-							$(".upbtn").attr('class','btn btn-warning upload{{$key}} upbtn');
+	<script type="text/javascript" >
+		$(document).ready(function(){
+			<?php foreach ($jobDetails as $key => $value): ?>
+				$('.download<?php echo($key); ?>').on('click', function () {
+					var id = $('.imgid<?php echo($key+1); ?>').val();
+					var createdby = $('.createdby<?php echo($key+1); ?>').val();
+					var dvalue = $('.download<?php echo $key; ?>').val();
+					var uvalue = $('.upload<?php echo $key; ?>').val();
+					$.ajax({
+						url: "{{url('admin/download')}}",
+						type: "GET",
+						data: {'id' : id, 'createdby' : createdby},
+						success: function(data){
+							/*$(".downdisabled").attr('class','downdisabled btn btn-danger download{{ $key }} disabled');
+							if ( uvalue == dvalue ) {
+								$(".upbtn").attr('class','btn btn-warning upload{{$key}} upbtn');
+							}
+							else{
+								$(".upbtn").attr('class','btn btn-warning upload{{$key}} upbtn disabled');
+							}*/
 						}
-						else{
-							$(".upbtn").attr('class','btn btn-warning upload{{$key}} upbtn disabled');
-						}*/
-					}
+					});
 				});
-			});
-		<?php endforeach ?>
-	});
-</script>
+			<?php endforeach ?>
+		});
+	</script>
 @endsection

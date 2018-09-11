@@ -27,7 +27,8 @@
 @section('content')
 <div id="content" class="content">
 	<ol class="breadcrumb pull-right">
-		<li><a href="{{asset('admin/operator')}}" class="btn btn-warning">Back</a></li>
+		<li><button class="btn btn-info">Reassign</button></li>
+		<li><a href="{{asset('admin/checker')}}" class="btn btn-warning">Back</a></li>
 	</ol>
 	<h1 class="page-header">Assigned <small>Job Lists</small></h1>
 	<div class="row">
@@ -41,16 +42,20 @@
 					</tr>
 				</thead>
 				<tbody>
-					@foreach($uploads as $key => $detail)
+					@foreach($uploadedimages as $key => $detail)
 					<tr>
 						<td>
 							{{ $key+1 }}
 						</td>
 						<td>{{ $detail->file_name }}</td>
 						<td id="">
-							<a download="{{ $detail->file_name }}" href="{{ $detail->file_path }}/{{ $detail->file_name }}" title="ImageName" class="btn btn-success" style="position: relative;top: -14px;" id="" value="">
+							<a download="{{ $detail->file_name }}" href="{{ $detail->file_path }}/{{ $detail->file_name }}" title="ImageName" class="btn btn-success" id="" value="">
 							    Download
 							</a>
+							<input type="text" hidden="hidden" id="" class="performance{{$key}}" value="{{ $detail->id }}">
+							<input type="text" hidden="hidden" id="" class="detail{{$key}}" value="{{ $detail->job_assign_details_id }}">
+							<button type="button" class="ok{{$key}} btn btn-info" id="ok">OK</button>
+							<button type="button" class="ng{{$key}} btn btn-danger">NG</button>
 						</td>
 					</tr>
 					@endforeach
@@ -61,4 +66,38 @@
 </div>
 @endsection
 @section('js')
+<script type="text/javascript" >
+	$(document).ready(function(){
+		<?php foreach ($uploadedimages as $key => $value): ?>
+			$('.ok<?php echo($key); ?>').on('click', function () {
+				var id = $('.performance<?php echo($key); ?>').val();
+				var detailid = $('.detail<?php echo($key); ?>').val();
+				/*console.log(detailid);*/
+				$.ajax({
+					url: "{{url('admin/performanceok')}}",
+					type: "GET",
+					data: {'id' : id, 'detailid' : detailid},
+					success: function(data){
+						
+					}
+				});
+			});
+		<?php endforeach ?>
+		<?php foreach ($uploadedimages as $key => $value): ?>
+			$('.ng<?php echo($key); ?>').on('click', function () {
+				var id = $('.performance<?php echo($key); ?>').val();
+				var detailid = $('.detail<?php echo($key); ?>').val();
+				/*console.log(detailid);*/
+				$.ajax({
+					url: "{{url('admin/performanceng')}}",
+					type: "GET",
+					data: {'id' : id, 'detailid' : detailid},
+					success: function(data){
+						
+					}
+				});
+			});
+		<?php endforeach ?>
+	});
+</script>
 @endsection

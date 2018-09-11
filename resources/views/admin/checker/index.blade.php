@@ -17,7 +17,7 @@
 	<h1 class="page-header">Check <small>Job Lists</small></h1>
 	<div class="row">
 		<div class="col-md-12">
-			<table  class="table table-striped table-bordered data-table">
+			<table class="table table-striped table-bordered data-table">
 				<thead>
 					<tr>
 						<th>No.</th>
@@ -30,24 +30,18 @@
 					</tr>
 				</thead>
 				<tbody>
-					@php
-						$i = 1;
-					@endphp
-					@foreach($jobLists as $list)
+					@foreach($arr_job_list as $key=>$list)
 					<tr>
-						<td>{{ $i }}</td>
-						<td>{{ $list->job_code }}</td>
-						<td></td>
-						<td></td>
-						<td>{{ $list->from_date }}</td>
-						<td>{{ $list->to_date }}</td>
+						<td>{{ $key }}</td>
+						<td>{{ $list['job_code'] }}</td>
+						<td>{{ $list['job_assign_count'] }}</td>
+						<td>{{ $list['remain_count'] }}</td>
+						<td>{{ $list['from_date'] }}</td>
+						<td>{{ $list['to_date'] }}</td>
 						<td>
-							<a class="btn btn-info btn-xs" href="checker-detail/{{$list->id}}"><i class="fa fa-eye"></i> View</a>
+							<a class="btn btn-info btn-xs" href="checker-detail/{{ $list['id'] }}"><i class="fa fa-eye"></i> View</a>
 						</td>
 					</tr>
-					@php
-						$i++;
-					@endphp
 					@endforeach
 				</tbody>
 			</table>
@@ -56,7 +50,4 @@
 </div>
 @endsection
 @section('js')
-<script>
-	
-</script>
 @endsection

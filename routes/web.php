@@ -46,7 +46,9 @@ Route::group(['prefix' => 'admin'], function () {
   Route::post('job-detail/upload', 'OperatorController@upload');
   Route::get('checker', 'CheckerController@index');
   Route::get('checker-detail/{id}', 'CheckerController@detail');
-  Route::get('checker-download', 'CheckerController@download');
+  Route::get('performanceok', 'CheckerController@ok');
+  Route::get('performanceng', 'CheckerController@ng');
+  
   
   //************ End Operator ************//
 
