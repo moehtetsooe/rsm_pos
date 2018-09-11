@@ -124,21 +124,30 @@ class JobAssignController extends Controller
             public function show(JobAssign $jobAssign)
             {
                 //dd($jobAssign);
-                $role = '';
-                $name = '';
-                $names = [];
-                foreach($jobAssign->operator_id as $optId)
-                {
-                    $role = Role::Where('roles.id','=',$optId)->select('roles.name')->get();
-                    $name = $role[0]->name;
-                    $names[] = $name;
-                }
+                // $role = '';
+                // $name = '';
+                // $names = [];
+                // foreach($jobAssign->operator_id as $optId)
+                // {
+                //     $role = Role::Where('roles.id','=',$optId)->select('roles.name')->get();
+                //     $name = $role[0]->name;
+                //     $names[] = $name;
+                // }
                 //dd($names);
                 
-                $assignPhotos = JobAssignDetail::Where('job_assign_details.job_assign_id','=',$jobAssign->id)->get();
+                // $assignPhotos = JobAssignDetail::Where('job_assign_details.job_assign_id','=',$jobAssign->id)->get();
                 //dd($assignPhotos);
-                
-                return view('admin.job-assign.show', compact('jobAssign','assignPhotos','names'));
+                 
+                $job_details = DB::table('job_assigns as ja')
+                ->join('job_assign_details as jad', 'ja.id', '=', 'jad.job_assign_id')
+                ->join('member_work_dones as mwd', 'jad.id', '=', 'mwd.job_assign_details_id')
+                ->join('admins as a', 'a.id', '=', 'mwd.user_id')
+                ->where('ja.id', $jobAssign->id)
+                // ->where('mwd.status', '=','uploaded')
+                ->selectRaw('mwd.job_assigns_id, mwd.job_assign_details_id, mwd.user_id, a.name as worked_by,jad.file_name, ja.estimate_complete_time, TIMESTAMPDIFF(MINUTE, download_time, upload_time) AS worked_time')->get();
+
+                // dd($job_details);
+                return view('admin.job-assign.show', compact('job_details'));
             }
             
             /**
